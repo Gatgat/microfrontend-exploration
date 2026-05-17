@@ -25,6 +25,11 @@ L'architecture repose sur un conteneur principal ("Shell") et trois Microfronten
 - **Mécanique :** Utilise le hook `useBlocker` de React Router pour bloquer un retour arrière de l'utilisateur. 
 - **La Leçon :** Lorsqu'on tente un retour arrière, on peut observer dans les logs que le navigateur déclenche naturellement un `popstate`. Le routeur du MFE, pour bloquer cette action, émet instantanément un "contre-popstate" fantôme (`pushState`) pour annuler la navigation. Manipuler la pile globale depuis un enfant isolé est extrêmement dangereux car cela risque de désynchroniser tous les autres routeurs de la page.
 
+### 5. MFE Violet (`<mfe-violet>`) : Blocage & Communication Bidirectionnelle
+- **Rôle :** Démontrer un cas d'usage avancé de contrôle de navigation entre l'hôte et l'enfant.
+- **Mécanique :** Le MFE utilise `useBlocker` pour intercepter toute tentative de navigation. Contrairement au MFE Rouge, il n'offre pas la possibilité à l'utilisateur de "Forcer" directement le passage. Il attend passivement un événement de déblocage (`unlock-violet-navigation`).
+- **Communication Bidirectionnelle :** L'application Shell détecte que le MFE Violet est monté. Elle affiche un bouton spécial "Débloquer" dans sa propre interface. Au clic, le Shell émet un `CustomEvent` que le MFE Violet capte pour libérer la navigation (`blocker.proceed()`). Cela illustre comment un Shell peut orchestrer des flux bloquants (ex: sauvegarde globale en attente) tout en gardant les composants isolés.
+
 ---
 
 ## 🎥 Démonstrations (Walkthrough)
