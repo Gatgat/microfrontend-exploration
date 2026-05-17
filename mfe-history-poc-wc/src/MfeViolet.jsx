@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, useNavigate, Outlet, useBlocker } from 'react-router-dom';
 
 const styles = `
-  .mfe-content { padding: 2rem; color: white; background: #e74c3c; height: 100%; box-sizing: border-box; }
+  .mfe-content { padding: 2rem; color: white; background: #8e44ad; height: 100%; box-sizing: border-box; }
   .question-card { background: white; color: #2c3e50; padding: 2rem; border-radius: 8px; margin-top: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
   .actions { display: flex; justify-content: space-between; margin-top: 2rem; gap: 1rem; }
   button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 1rem; }
@@ -17,7 +17,7 @@ const styles = `
 
 const Layout = () => (
   <div className="mfe-content">
-    <h2>MFE Rouge (Anti-pattern useBlocker)</h2>
+    <h2>MFE Violet (useBlocker + Déblocage Shell)</h2>
     <Outlet />
   </div>
 );
@@ -25,30 +25,35 @@ const Layout = () => (
 const Question = ({ id, nextUrl }) => {
   const navigate = useNavigate();
 
-  // ANTI-PATTERN : Bloquer la navigation (surtout le retour arrière natif)
-  // Dans une architecture MFE, cela interfère avec le routeur hôte (Shell)
+  // Bloque les navigations PUSH (boutons Suivant) et POP (retour arrière)
   const blocker = useBlocker(
-    ({ historyAction }) => historyAction === "POP"
+    ({ historyAction }) => historyAction === "POP" || historyAction === "PUSH" || historyAction === "REPLACE"
   );
   
+  // Écoute de l'événement custom venant du Shell pour débloquer
+  useEffect(() => {
+    const handleUnlock = () => {
+      if (blocker.state === "blocked") {
+        blocker.proceed();
+      }
+    };
+    window.addEventListener('unlock-violet-navigation', handleUnlock);
+    return () => window.removeEventListener('unlock-violet-navigation', handleUnlock);
+  }, [blocker]);
+
   const handleNextMfe = () => {
-    // Si useBlocker bloque, même cette transition pourrait être affectée si ce n'est pas géré, 
-    // mais ici on bloque surtout les POP (retour arrière natif)
-    window.dispatchEvent(new CustomEvent('cross-mfe-navigate', { detail: { path: '/app/microfe-violet/q1' } }));
+    window.dispatchEvent(new CustomEvent('cross-mfe-navigate', { detail: { path: '/app' } }));
   };
 
   return (
     <div className="question-card">
       {blocker.state === "blocked" && (
         <div className="anti-pattern-warning">
-          ⚠️ Action bloquée par useBlocker ! Le routeur interne du MFE a annulé l'événement natif de l'historique.
-          <br/>
-          <button onClick={() => blocker.proceed()} style={{marginTop: '10px', background: 'white', color: '#f39c12'}}>Forcer (Proceed)</button>
-          <button onClick={() => blocker.reset()} style={{marginTop: '10px', marginLeft: '10px', background: 'white', color: '#333'}}>Annuler</button>
+          ⚠️ Navigation bloquée par useBlocker ! Cliquez sur le bouton "Débloquer" dans l'en-tête du Shell pour continuer.
         </div>
       )}
       <h3>Question {id}</h3>
-      <p>Ceci est la question {id} du MFE Rouge. Essayez d'utiliser le <strong>bouton retour de votre navigateur</strong> !</p>
+      <p>Essayez de naviguer. La navigation sera interceptée et mise en attente jusqu'à ce que le Shell vous autorise !</p>
       <div className="actions">
         <button onClick={() => navigate(-1)} className="btn-back">Retour (React Router)</button>
         {nextUrl ? (
@@ -73,12 +78,12 @@ const App = () => {
         { path: "*", element: <Question id={1} nextUrl="q2" /> }
       ]
     }
-  ], { basename: "/app/microfe-rouge" }), []);
+  ], { basename: "/app/microfe-violet" }), []);
 
   return <RouterProvider router={router} />;
 };
 
-class MfeRedElement extends HTMLElement {
+class MfeVioletElement extends HTMLElement {
   connectedCallback() {
     if (!this.shadowRoot) {
       const mountPoint = document.createElement('div');
@@ -103,8 +108,8 @@ class MfeRedElement extends HTMLElement {
   }
 }
 
-if (!customElements.get('mfe-rouge')) {
-  customElements.define('mfe-rouge', MfeRedElement);
+if (!customElements.get('mfe-violet')) {
+  customElements.define('mfe-violet', MfeVioletElement);
 }
 
-export default MfeRedElement;
+export default MfeVioletElement;

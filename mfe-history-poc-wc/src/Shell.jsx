@@ -5,6 +5,7 @@ import HistoryLogger from './HistoryLogger';
 import './MfeBlue';
 import './MfeYellow';
 import './MfeRed';
+import './MfeViolet';
 
 const ShellLayout = () => {
   const location = useLocation();
@@ -32,6 +33,15 @@ const ShellLayout = () => {
             {location.pathname === '/app' && (
                 <button onClick={() => navigate('/app/microfe-bleu/q1')} className="btn-primary">
                   Démarrer le flux (MFE Bleu)
+                </button>
+            )}
+            {location.pathname.startsWith('/app/microfe-violet') && (
+                <button 
+                  onClick={() => window.dispatchEvent(new CustomEvent('unlock-violet-navigation'))} 
+                  className="btn-primary" 
+                  style={{backgroundColor: '#8e44ad', color: 'white', marginLeft: '10px'}}
+                >
+                  Débloquer la navigation Violette
                 </button>
             )}
           </div>
@@ -70,6 +80,10 @@ const shellRouter = createBrowserRouter([
       {
         path: "microfe-rouge/*",
         element: <mfe-rouge></mfe-rouge>
+      },
+      {
+        path: "microfe-violet/*",
+        element: <mfe-violet></mfe-violet>
       }
     ]
   },
