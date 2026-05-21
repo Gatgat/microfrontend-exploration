@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider, useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import HistoryLogger from './HistoryLogger';
+import LearningGuide from './LearningGuide';
 // Import pour exécuter le customElements.define()
 import './MfeBlue';
 import './MfeYellow';
@@ -86,6 +87,12 @@ const HomeDashboard = () => {
 const ShellLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // State for sidebar tabs
+  const [sidebarTab, setSidebarTab] = useState('telemetry');
+
+  // State for sidebar size/visibility: 'standard', 'expanded', 'hidden'
+  const [sidebarState, setSidebarState] = useState('standard');
 
   // Écoute des événements de navigation provenant des Web Components isolés
   useEffect(() => {
@@ -97,9 +104,61 @@ const ShellLayout = () => {
   }, [navigate]);
 
   return (
-    <div className="shell-layout bg-green">
+    <div className={`shell-layout sidebar-state-${sidebarState}`}>
+      {/* Floating Sidebar Restore Button */}
+      {sidebarState === 'hidden' && (
+        <button 
+          className="floating-panel-trigger pulse-glow" 
+          onClick={() => setSidebarState('standard')}
+          title="Afficher le panel d'apprentissage et de télémétrie"
+        >
+          📂 Afficher le Panel
+        </button>
+      )}
+
       <div className="logger-panel">
-        <HistoryLogger />
+        <div className="panel-control-header">
+          <span className="panel-title">
+            {sidebarTab === 'telemetry' ? '📡 LOGS HISTORIQUE' : '💡 CENTRE D\'APPRENTISSAGE'}
+          </span>
+          <div className="panel-actions">
+            <button 
+              className="panel-action-btn"
+              onClick={() => setSidebarState(prev => prev === 'expanded' ? 'standard' : 'expanded')}
+              title={sidebarState === 'expanded' ? "Réduire le panel" : "Agrandir le panel"}
+            >
+              {sidebarState === 'expanded' ? '🗜️ Réduire' : '🔍 Agrandir'}
+            </button>
+            <button 
+              className="panel-action-btn btn-close"
+              onClick={() => setSidebarState('hidden')}
+              title="Masquer le panel"
+            >
+              📁 Masquer
+            </button>
+          </div>
+        </div>
+
+        <div className="sidebar-tabs">
+          <button 
+            className={`sidebar-tab-btn ${sidebarTab === 'telemetry' ? 'active' : ''}`}
+            onClick={() => setSidebarTab('telemetry')}
+          >
+            📡 Logs Historique
+          </button>
+          <button 
+            className={`sidebar-tab-btn ${sidebarTab === 'guide' ? 'active' : ''}`}
+            onClick={() => setSidebarTab('guide')}
+          >
+            💡 Guide & Code
+          </button>
+        </div>
+        
+        {sidebarTab === 'telemetry' ? (
+          <HistoryLogger />
+        ) : (
+          <LearningGuide currentPath={location.pathname} />
+        )}
       </div>
       <div className="main-panel">
         <div className="shell-header">
