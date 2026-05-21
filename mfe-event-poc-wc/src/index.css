@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap');
+
 :root {
   --primary: #2ecc71;
   --primary-hover: #27ae60;
@@ -43,6 +45,7 @@ body {
   width: 100vw;
   overflow: hidden;
   background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  position: relative;
 }
 
 /* Sidebar Event Inspector panel */
@@ -56,8 +59,119 @@ body {
   padding: 1.5rem;
   box-shadow: 4px 0 25px rgba(0, 0, 0, 0.08);
   z-index: 10;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
 }
+
+/* Sidebar sizing and collapse behaviors */
+.shell-layout.sidebar-state-standard .logger-panel {
+  width: 480px;
+}
+
+.shell-layout.sidebar-state-expanded .logger-panel {
+  width: 780px;
+}
+
+.shell-layout.sidebar-state-hidden .logger-panel {
+  width: 0;
+  padding: 0;
+  margin: 0;
+  border-right: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Panel Sizing Controls styling */
+.panel-control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #718096;
+  font-family: 'Outfit', sans-serif;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.panel-action-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  color: #4a5568;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', sans-serif;
+}
+
+.panel-action-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #1a252f;
+  transform: translateY(-0.5px);
+}
+
+.panel-action-btn.btn-close:hover {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+}
+
+.floating-panel-trigger {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  z-index: 99;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #27ae60;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-panel-trigger:hover {
+  transform: scale(1.05) translateY(-2px);
+  background: white;
+  box-shadow: 0 12px 40px rgba(46, 204, 113, 0.25);
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 
 .main-panel {
   flex: 1;
@@ -522,3 +636,406 @@ mfe-red, mfe-bleu, mfe-jaune, mfe-violet, mfe-coexist {
     box-shadow: 0 0 15px rgba(46, 204, 113, 0.8), 0 0 5px rgba(46, 204, 113, 0.4);
   }
 }
+
+/* ==========================================================================
+   Learning UX/UI Components Styles
+   ========================================================================== */
+
+/* Sidebar Tab Selector */
+.sidebar-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 3px;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.sidebar-tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #718096;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.sidebar-tab-btn:hover {
+  color: var(--dark-light);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.sidebar-tab-btn.active {
+  background: white;
+  color: var(--dark-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Learning Guide Core Layout */
+.guide-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+}
+
+.guide-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.guide-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--dark-light);
+  letter-spacing: -0.3px;
+}
+
+.guide-intro {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #4a5568;
+  opacity: 0.9;
+}
+
+.guide-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.guide-section h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.guide-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guide-card {
+  background: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
+}
+
+.guide-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+  border-color: rgba(46, 204, 113, 0.2);
+}
+
+.guide-card h5 {
+  margin: 0 0 4px 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--dark-light);
+}
+
+.guide-card p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #718096;
+}
+
+/* Comparison Lists (Pros / Cons) */
+.guide-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.comparison-column h5 {
+  margin: 0 0 8px 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.comparison-column ul {
+  margin: 0;
+  padding-left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.comparison-column li {
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.comparison-column.pros h5 { color: #2ecc71; }
+.comparison-column.pros li { color: #27ae60; }
+.comparison-column.cons h5 { color: #e74c3c; }
+.comparison-column.cons li { color: #c0392b; }
+
+/* Interactive Code Section */
+.guide-code-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.code-header h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.code-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.code-tab {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #718096;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.code-tab.active {
+  background: white;
+  color: var(--dark-light);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.btn-copy {
+  background: #edf2f7;
+  color: #4a5568;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copy:hover {
+  background: #e2e8f0;
+  color: var(--dark);
+}
+
+.btn-copy.copied {
+  background: #2ecc71;
+  color: white;
+  border-color: #2ecc71;
+  animation: pulse 1s ease;
+}
+
+.code-viewport {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Syntax Highlighter (Dracula-like) */
+.syntax-highlight {
+  margin: 0;
+  padding: 14px;
+  background: #1e1e2e;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: #f8f8f2;
+}
+
+.syntax-highlight code {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.token.comment {
+  color: #6272a4;
+  font-style: italic;
+}
+
+.token.string {
+  color: #f1fa8c;
+}
+
+.token.keyword {
+  color: #ff79c6;
+  font-weight: bold;
+}
+
+.token.builtin {
+  color: #8be9fd;
+  font-weight: bold;
+}
+
+.token.function {
+  color: #50fa7b;
+}
+
+
+/* ==========================================================================
+   Responsive & Adaptive Layout Media Queries
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  /* On tablets, slightly shrink the sidebar panels to give more breathing room to MFE demo */
+  .shell-layout.sidebar-state-standard .logger-panel {
+    width: 400px;
+  }
+  .shell-layout.sidebar-state-expanded .logger-panel {
+    width: 650px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* On mobile and small screens, convert the sidebar to an absolute drawer overlay */
+  .logger-panel {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    z-index: 100;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.25);
+  }
+  
+  .shell-layout.sidebar-state-standard .logger-panel {
+    width: 85vw;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .shell-layout.sidebar-state-expanded .logger-panel {
+    width: 100vw;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .shell-layout.sidebar-state-hidden .logger-panel {
+    width: 0;
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .main-panel {
+    width: 100%;
+  }
+
+  .mfe-container-wrapper {
+    margin: 1rem;
+    min-height: 400px;
+  }
+
+  .shell-header {
+    padding: 1.25rem 1rem;
+  }
+
+  .shell-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .shell-header p {
+    font-size: 0.85rem;
+  }
+
+  .shell-actions {
+    margin-top: 0.75rem;
+  }
+
+  .home-dashboard {
+    padding: 1rem;
+  }
+
+  .home-dashboard h2 {
+    font-size: 1.35rem;
+  }
+
+  .poc-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .poc-card {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Coexistence page header and elements wrapping for small phone layouts */
+  .coexistence-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 1rem;
+  }
+
+  .coexistence-strategy-selector {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .btn-strategy-option {
+    flex: 1;
+    text-align: center;
+    padding: 6px 8px;
+    font-size: 0.78rem;
+  }
+
+  /* Stacking columns in comparison lists on tiny screens */
+  .guide-comparison {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+

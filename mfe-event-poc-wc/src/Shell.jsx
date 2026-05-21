@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createBrowserRouter, RouterProvider, useLocation, useNavigate, Navigate, Outlet, useOutletContext } from 'react-router-dom';
 import EventInspector from './EventInspector';
+import LearningGuide from './LearningGuide';
 
 // Import for customElements.define() executions
 import './MfeRed';
@@ -79,6 +80,12 @@ const ShellLayout = () => {
   // Logs and animations state for the Event Inspector
   const [logs, setLogs] = useState([]);
   const [lastEvent, setLastEvent] = useState(null);
+  
+  // State for sidebar tabs
+  const [sidebarTab, setSidebarTab] = useState('telemetry');
+
+  // State for sidebar size/visibility: 'standard', 'expanded', 'hidden'
+  const [sidebarState, setSidebarState] = useState('standard');
   
   // Ref for the Custom Elements
   const yellowRef = useRef(null);
@@ -183,15 +190,67 @@ const ShellLayout = () => {
   }, [location.pathname]); // Re-run on navigation to re-bind ref when DOM updates
 
   return (
-    <div className="shell-layout">
-      {/* Sidebar - Event Inspector */}
+    <div className={`shell-layout sidebar-state-${sidebarState}`}>
+      {/* Floating Sidebar Restore Button */}
+      {sidebarState === 'hidden' && (
+        <button 
+          className="floating-panel-trigger pulse-glow" 
+          onClick={() => setSidebarState('standard')}
+          title="Afficher le panel d'apprentissage et de télémétrie"
+        >
+          📂 Afficher le Panel
+        </button>
+      )}
+
+      {/* Sidebar - Event Inspector / Learning Guide */}
       <div className="logger-panel">
-        <EventInspector 
-          logs={logs} 
-          onClear={() => setLogs([])} 
-          lastEvent={lastEvent} 
-          currentPath={location.pathname}
-        />
+        <div className="panel-control-header">
+          <span className="panel-title">
+            {sidebarTab === 'telemetry' ? '📡 LAB TÉLÉMÉTRIE' : '💡 CENTRE D\'APPRENTISSAGE'}
+          </span>
+          <div className="panel-actions">
+            <button 
+              className="panel-action-btn"
+              onClick={() => setSidebarState(prev => prev === 'expanded' ? 'standard' : 'expanded')}
+              title={sidebarState === 'expanded' ? "Réduire le panel" : "Agrandir le panel"}
+            >
+              {sidebarState === 'expanded' ? '🗜️ Réduire' : '🔍 Agrandir'}
+            </button>
+            <button 
+              className="panel-action-btn btn-close"
+              onClick={() => setSidebarState('hidden')}
+              title="Masquer le panel"
+            >
+              📁 Masquer
+            </button>
+          </div>
+        </div>
+
+        <div className="sidebar-tabs">
+          <button 
+            className={`sidebar-tab-btn ${sidebarTab === 'telemetry' ? 'active' : ''}`}
+            onClick={() => setSidebarTab('telemetry')}
+          >
+            📡 Télémétrie en Direct
+          </button>
+          <button 
+            className={`sidebar-tab-btn ${sidebarTab === 'guide' ? 'active' : ''}`}
+            onClick={() => setSidebarTab('guide')}
+          >
+            💡 Guide & Code
+          </button>
+        </div>
+        
+        {sidebarTab === 'telemetry' ? (
+          <EventInspector 
+            logs={logs} 
+            onClear={() => setLogs([])} 
+            lastEvent={lastEvent} 
+            currentPath={location.pathname}
+          />
+        ) : (
+          <LearningGuide currentPath={location.pathname} />
+        )}
       </div>
 
       {/* Main Content Area */}
