@@ -7,6 +7,9 @@ import './MfeRed';
 import './MfeBlue';
 import './MfeYellow';
 import './MfeViolet';
+import './MfeCoexist';
+
+import MfeCoexistenceWrapper from './MfeCoexistenceWrapper';
 
 const HomeDashboard = () => {
   const navigate = useNavigate();
@@ -51,6 +54,14 @@ const HomeDashboard = () => {
             <strong>Stratégie :</strong> Approche déclarative standard. Les attributs HTML du composant gèrent l'état entrant, et des Custom Events sont émis directement sur le nœud hôte pour l'état sortant.
           </p>
           <button onClick={() => navigate('/app/microfe-violet')} className="btn-primary">Explorer</button>
+        </div>
+
+        <div className="poc-card border-coexist">
+          <h3>🔀 Coexistence & Communication Bidirectionnelle</h3>
+          <p>
+            <strong>Stratégie :</strong> Deux instances de Web Components sur la même page communiquant en P2P direct (MessageChannel) ou via médiation (DOM Events).
+          </p>
+          <button onClick={() => navigate('/app/coexistence')} className="btn-primary">Explorer</button>
         </div>
       </div>
     </div>
@@ -179,6 +190,7 @@ const ShellLayout = () => {
           logs={logs} 
           onClear={() => setLogs([])} 
           lastEvent={lastEvent} 
+          currentPath={location.pathname}
         />
       </div>
 
@@ -278,7 +290,7 @@ const ShellLayout = () => {
         
         {/* Web Component Rendering Area */}
         <div className="mfe-container-wrapper">
-          <Outlet context={{ yellowRef, violetRef, violetProgress, violetTheme }} />
+          <Outlet context={{ yellowRef, violetRef, violetProgress, violetTheme, addLog }} />
         </div>
       </div>
     </div>
@@ -328,6 +340,10 @@ const shellRouter = createBrowserRouter([
       {
         path: "microfe-violet",
         element: <VioletMfeWrapper />
+      },
+      {
+        path: "coexistence",
+        element: <MfeCoexistenceWrapper />
       }
     ]
   },

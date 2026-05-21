@@ -32,7 +32,11 @@ L'architecture repose sur une application hôte principale (le **Shell**) et qua
 - **Mécanique :** Approche hybride réactive :
   - **Entrée (In)** : Le Shell met à jour les attributs HTML (`progress` et `theme`) sur la balise `<mfe-violet>`. Le Web Component intercepte réactivement ces changements via `attributeChangedCallback`.
   - **Sortie (Out)** : Lorsque l'utilisateur manipule le curseur du MFE, un Custom Event `progress-change` est dispatché directement sur le nœud hôte du Web Component.
-- **Analyse :** C'est l'intégration la plus standardisée et la plus naturelle du point de vue d'un développeur React.
+### 6. Cas Pratique : Coexistence & Communication Bidirectionnelle (`<mfe-coexist>`)
+- **Mécanique :** Deux instances distinctes du même composant Web (`mfe-coexist` configuré en Peer Alpha et Peer Beta) sont montées sur la même page. L'utilisateur peut basculer dynamiquement entre deux topologies :
+  - **MessageChannel P2P Direct** : Le Shell génère un canal bidirectionnel et transmet un port à chaque instance. Les instances communiquent en direct en mémoire sans surcharge du DOM.
+  - **Médiateur DOM (Shell)** : Les instances émettent des Custom Events vers le Shell via le DOM, et le Shell les réachemine manuellement vers le destinataire en invoquant son API publique.
+- **Analyse :** Démontre comment un unique composant Web réutilisable peut coexister en plusieurs exemplaires et collaborer de manière autonome (P2P) ou gouvernée (Médiation).
 
 ---
 
